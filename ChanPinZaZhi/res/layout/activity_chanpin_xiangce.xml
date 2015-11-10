@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gallery_bg"
+    tools:context=".MainActivity" >
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="30dp" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/appname"
+        android:src="@drawable/gallery_btn_close" />
+
+    <ImageView
+        android:id="@+id/gallery_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/gallery_btn_up"
+        android:contentDescription="@string/appname" />
+
+    <ImageView
+        android:id="@+id/gallery_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/gallery_btn_next"
+        android:contentDescription="@string/appname" />
+
+    <TextView
+        android:id="@+id/tv_pname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|left"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:gravity="center_horizontal"
+        android:text="@string/txt_gallery_desc"
+        android:textColor="@color/gallery_desc_color"
+        android:textSize="@dimen/gallery_desc_size" />
+
+</RelativeLayout>

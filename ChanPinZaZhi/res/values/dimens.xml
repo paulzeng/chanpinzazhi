@@ -1,0 +1,33 @@
+<resources>
+    <dimen name="title_height">48dp</dimen>
+	<dimen name="button_height">40dp</dimen>
+	<!-- 字体大小 -->
+	<dimen name="txt_title">16sp</dimen>
+	<dimen name="txt_content">14sp</dimen>
+	<dimen name="txt_button">14sp</dimen>
+	<dimen name="categrory_item">5dp</dimen>
+	
+	<dimen name="picture_pull_to_refresh_last_update_time_top_margin">6dp</dimen>
+    <dimen name="picture_pull_to_refresh_footer_height">30dp</dimen>
+    <!-- slidingmenu -->
+    <dimen name="slidingmenu_offset">150dp</dimen> 
+    <dimen name="list_padding">10dp</dimen>
+    <dimen name="shadow_width">15dp</dimen>
+    <!-- share -->
+    <!-- body content -->
+    <dimen name="body_padding_medium">10dp</dimen>
+    <dimen name="body_padding_large">10dp</dimen>
+    <dimen name="text_size_smaller">12sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_xlarge">18sp</dimen>
+    <dimen name="speaker_image_size">36dp</dimen>
+    <dimen name="speaker_image_padding">8dp</dimen>
+    <dimen name="vendor_image_size">100dp</dimen>
+    
+    <dimen name="actionbar_height">45dip</dimen>
+    <dimen name="actionbar_item_height">45dip</dimen>
+    <dimen name="actionbar_item_width">45dip</dimen>
+    
+</resources>

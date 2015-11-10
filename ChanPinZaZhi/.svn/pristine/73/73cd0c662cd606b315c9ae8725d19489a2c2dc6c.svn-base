@@ -1,0 +1,4 @@
+key.store=D:\\appkey\\eims.keystore
+key.store.password=eims.cc
+key.alias=eims
+key.alias.password=eims.cc

@@ -1,0 +1,267 @@
+package com.chanpinzazhi.soap;
+
+import org.ksoap2.serialization.SoapObject;
+
+import android.app.Service;
+import android.content.Context;
+import android.os.Handler;
+
+import com.chanpinzazhi.impl.HttpRequestImpl;
+import com.chanpinzazhi.manager.ConfigManager;
+import com.chanpinzazhi.manager.L;
+import com.chanpinzazhi.manager.NetManager;
+import com.chanpinzazhi.manager.PreferenceManager;
+import com.chanpinzazhi.manager.SecurityManager;
+import com.chanpinzazhi.manager.StringManager;
+
+public class SoapHttpRequest implements HttpRequestImpl {
+	private int siteID;
+
+	public SoapHttpRequest(Context cx) {
+		siteID = Integer.parseInt(ConfigManager.getConfigs(cx, "siteID"));
+	}
+
+	@Override
+	public void getNavByTableId(int msgWhat,Context context, Handler handler,
+			String deviceID, int deviceType, int tableId, String fields,
+			String cnd, String order, int rowIndex, int pageSize,
+			String filterHtmlescapeColumns, boolean isRefreshCache,
+			String lastCacheTime) {
+		if (NetManager.isNetworkConnected(handler, context)) {
+			handler.sendEmptyMessage(SoapConstants.LOADING);
+			// TODO Auto-generated method stub
+			SoapObject rpc = new SoapObject(SoapConstants.NAMESAPCE,
+					SoapConstants.GetByTableId);
+			rpc.addProperty("deviceID", deviceID);
+			rpc.addProperty("siteId", siteID);
+			rpc.addProperty("deviceType", deviceType);
+			rpc.addProperty("tableId", tableId);
+			rpc.addProperty("fields", fields);
+			rpc.addProperty("cnd", cnd);
+			rpc.addProperty("order", order);
+			rpc.addProperty("rowIndex", rowIndex);
+			rpc.addProperty("pageSize", pageSize);
+			rpc.addProperty("filterHtmlescapeColumns", filterHtmlescapeColumns);
+			rpc.addProperty("isRefreshCache", isRefreshCache);
+			rpc.addProperty("lastCacheTime", lastCacheTime);
+			String timestamp = StringManager
+					.getTime(System.currentTimeMillis());
+
+			rpc.addProperty("timestamp", timestamp);
+			String sing_tem = deviceID + siteID + deviceType + tableId + fields
+					+ cnd + order + rowIndex + pageSize
+					+ filterHtmlescapeColumns + "False" + lastCacheTime
+					+ timestamp + SoapConstants.KEY;
+			L.d("HTTP", "sing_tem==" + sing_tem);
+			String sing_tem_rep = StringManager.replaceBlank(sing_tem);
+			L.d("HTTP", "sing_tem_rep==" + sing_tem_rep);
+			String sign = SecurityManager.getMD5HashText(sing_tem_rep);
+			L.d("HTTP", "sign==" + sign);
+			rpc.addProperty("sign", sign);
+			GetByTableIdHttpRequest request = new GetByTableIdHttpRequest(msgWhat,
+					context, handler, rpc, false);
+			request.execute("");
+		} else {
+			handler.sendEmptyMessage(SoapConstants.NO_NET);
+		}
+	}
+
+	@Override
+	public void GetByNavigateId(int msgWhat, Context context, Handler handler,
+			String deviceID, int deviceType,int source,
+			String fields, String cnd, String order, int rowIndex,
+			int pageSize, String filterHtmlescapeColumns,
+			boolean isRefreshCache, String lastCacheTime, boolean flag) {
+		// TODO Auto-generated method stub
+		if (NetManager.isNetworkConnected(handler, context)) {
+			int navigateId = Integer.parseInt(PreferenceManager.getString(context,
+					"_id","3"));
+			handler.sendEmptyMessage(SoapConstants.LOADING);
+			SoapObject rpc = new SoapObject(SoapConstants.NAMESAPCE,
+					SoapConstants.GetByNavigateId);
+			rpc.addProperty("deviceID", deviceID);
+			rpc.addProperty("siteId", siteID);
+			rpc.addProperty("deviceType", deviceType);
+			rpc.addProperty("navigateId", navigateId);
+			rpc.addProperty("source", source);
+			rpc.addProperty("fields", fields);
+			rpc.addProperty("cnd", cnd);
+			rpc.addProperty("order", order);
+			rpc.addProperty("rowIndex", rowIndex);
+			rpc.addProperty("pageSize", pageSize);
+			rpc.addProperty("filterHtmlescapeColumns", filterHtmlescapeColumns);
+			rpc.addProperty("isRefreshCache", isRefreshCache);
+
+			String timestamp = StringManager
+					.getTime(System.currentTimeMillis());
+			rpc.addProperty("lastCacheTime", lastCacheTime);
+			rpc.addProperty("timestamp", timestamp);
+			String refreshFlag = "";
+			if (isRefreshCache) {
+				refreshFlag = "True";
+			} else {
+				refreshFlag = "False";
+			}
+			String sing_tem = deviceID + siteID + deviceType + navigateId
+					+ source + fields + cnd + order + rowIndex + pageSize
+					+ filterHtmlescapeColumns + refreshFlag + lastCacheTime
+					+ timestamp + SoapConstants.KEY;
+			L.d("HTTP", "sing_tem==" + sing_tem);
+			String sing_tem_rep = StringManager.replaceBlank(sing_tem);
+			L.d("HTTP", "sing_tem_rep==" + sing_tem_rep);
+			String sign = SecurityManager.getMD5HashText(sing_tem_rep);
+			L.d("HTTP", "sign==" + sign);
+			rpc.addProperty("sign", sign);
+			GetByNavigateIdHttpRequest request = new GetByNavigateIdHttpRequest(
+					msgWhat, context, handler, rpc, flag);
+			request.execute("");
+		} else {
+			handler.sendEmptyMessage(SoapConstants.NO_NET);
+		}
+	}
+
+	@Override
+	public void GetContentWidthRelevantData(int msgWhat, Context context,
+			Handler handler, String deviceID, int deviceType,  
+			String fields, String cnd, String order, int rowIndex,
+			int pageSize, String filterHtmlescapeColumns,
+			boolean isRefreshCache, String lastCacheTime, boolean flag) {
+		// TODO Auto-generated method stub
+		if (NetManager.isNetworkConnected(handler, context)) {
+			int navigateId = Integer.parseInt(PreferenceManager.getString(context,
+					"_id","3"));
+			handler.sendEmptyMessage(SoapConstants.LOADING);
+			SoapObject rpc = new SoapObject(SoapConstants.NAMESAPCE,
+					SoapConstants.GetByRelevanceData);
+			rpc.addProperty("deviceID", deviceID);
+			rpc.addProperty("siteId", siteID);
+			rpc.addProperty("deviceType", deviceType);
+			rpc.addProperty("navigateId", navigateId);
+			rpc.addProperty("fields", fields);
+			rpc.addProperty("cnd", cnd);
+			rpc.addProperty("order", order);
+			rpc.addProperty("rowIndex", rowIndex);
+			rpc.addProperty("pageSize", pageSize);
+			rpc.addProperty("filterHtmlescapeColumns", filterHtmlescapeColumns);
+			rpc.addProperty("isRefreshCache", isRefreshCache);
+			rpc.addProperty("lastCacheTime", lastCacheTime);
+
+			String timestamp = StringManager
+					.getTime(System.currentTimeMillis());
+			rpc.addProperty("timestamp", timestamp);
+
+			String sing_tem = deviceID + siteID + deviceType + navigateId
+					+ fields + cnd + order + rowIndex + pageSize
+					+ filterHtmlescapeColumns + "False" + lastCacheTime
+					+ timestamp + SoapConstants.KEY;
+			L.d("HTTP", "sing_tem==" + sing_tem);
+			String sing_tem_rep = StringManager.replaceBlank(sing_tem);
+			L.d("HTTP", "sing_tem_rep==" + sing_tem_rep);
+			String sign = SecurityManager.getMD5HashText(sing_tem_rep);
+			L.d("HTTP", "sign==" + sign);
+			rpc.addProperty("sign", sign);
+			GetByRelevanceDataHttpRequest request = new GetByRelevanceDataHttpRequest(
+					msgWhat, context, handler, rpc, flag);
+			request.execute("");
+		} else {
+			handler.sendEmptyMessage(SoapConstants.NO_NET);
+		}
+	}
+
+	@Override
+	public void postFeedback(Context context, Handler handler, String deviceID,
+			int deviceType, int tableId, int typeId, String sumbitContent) {
+		// TODO Auto-generated method stub
+		if (NetManager.isNetworkConnected(handler, context)) {
+			handler.sendEmptyMessage(SoapConstants.LOADING);
+			SoapObject rpc = new SoapObject(SoapConstants.NAMESAPCE,
+					SoapConstants.Post);
+			rpc.addProperty("deviceID", deviceID);
+			rpc.addProperty("siteId", siteID);
+			rpc.addProperty("deviceType", deviceType);
+			rpc.addProperty("tableId", tableId);
+			rpc.addProperty("typeId", typeId);
+			rpc.addProperty("sumbitContent", sumbitContent);
+
+			String timestamp = StringManager
+					.getTime(System.currentTimeMillis());
+			rpc.addProperty("timestamp", timestamp);
+			String sing_tem = deviceID + siteID + deviceType + tableId + typeId
+					+ sumbitContent + timestamp + SoapConstants.KEY;
+			L.d("HTTP", "sing_tem==" + sing_tem);
+			String sing_tem_rep = StringManager.replaceBlank(sing_tem);
+			L.d("HTTP", "sing_tem_rep==" + sing_tem_rep);
+			String sign = SecurityManager.getMD5HashText(sing_tem_rep);
+			L.d("HTTP", "sign==" + sign);
+			rpc.addProperty("sign", sign);
+			PostHttpRequest request = new PostHttpRequest(context, handler,
+					rpc, false);
+			request.execute("");
+		} else {
+			handler.sendEmptyMessage(SoapConstants.NO_NET);
+		}
+	}
+
+	@Override
+	public void GetNewContents(int msgWhat, Service context, Handler handler,
+			String deviceID, int deviceType, String tableIds,
+			String lastCacheTime) {
+		// TODO Auto-generated method stub
+		if (NetManager.isNetworkConnected(handler, context)) {
+			handler.sendEmptyMessage(SoapConstants.LOADING);
+			SoapObject rpc = new SoapObject(SoapConstants.NAMESAPCE,
+					SoapConstants.GetNewContents);
+			rpc.addProperty("deviceID", deviceID);
+			rpc.addProperty("siteId", siteID);
+			rpc.addProperty("deviceType", deviceType);
+			rpc.addProperty("tableIds", tableIds);
+			rpc.addProperty("lastCacheTime", lastCacheTime);
+			String timestamp = StringManager
+					.getTime(System.currentTimeMillis());
+			rpc.addProperty("timestamp", timestamp);
+
+			String sing_tem = deviceID + siteID + deviceType + tableIds
+					+ lastCacheTime + timestamp + SoapConstants.KEY;
+			L.d("HTTP", "sing_tem==" + sing_tem);
+			String sing_tem_rep = StringManager.replaceBlank(sing_tem);
+			L.d("HTTP", "sing_tem_rep==" + sing_tem_rep);
+			String sign = SecurityManager.getMD5HashText(sing_tem_rep);
+			L.d("HTTP", "sign==" + sign);
+			rpc.addProperty("sign", sign);
+			GetNewContentsRequest request = new GetNewContentsRequest(msgWhat,
+					context, handler, rpc, true);
+			request.execute("");
+		} else {
+			handler.sendEmptyMessage(SoapConstants.NO_NET);
+		}
+	}
+	@Override
+	public void GetAPPConfig(int msgWhat, Context context, Handler handler,String configIds) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		if (NetManager.isNetworkConnected(handler, context)) {
+			handler.sendEmptyMessage(SoapConstants.LOADING);
+			SoapObject rpc = new SoapObject(SoapConstants.NAMESAPCE,
+					SoapConstants.GetAPPConfig);
+			rpc.addProperty("siteId", siteID);
+			rpc.addProperty("configIds", configIds);
+			String timestamp = StringManager
+					.getTime(System.currentTimeMillis());
+			rpc.addProperty("timestamp", timestamp);
+
+			String sing_tem = siteID + configIds + timestamp
+					+ SoapConstants.KEY;
+			L.d("HTTP", "sing_tem==" + sing_tem);
+			String sing_tem_rep = StringManager.replaceBlank(sing_tem);
+			L.d("HTTP", "sing_tem_rep==" + sing_tem_rep);
+			String sign = SecurityManager.getMD5HashText(sing_tem_rep);
+			L.d("HTTP", "sign==" + sign);
+			rpc.addProperty("sign", sign);
+			GetAppConfigsRequest request = new GetAppConfigsRequest(msgWhat,
+					context, handler, rpc, true);
+			request.execute("");
+		} else {
+			handler.sendEmptyMessage(SoapConstants.NO_NET);
+		}
+	}
+}

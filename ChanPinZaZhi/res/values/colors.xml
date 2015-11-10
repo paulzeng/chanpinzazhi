@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 间隔条颜色 -->
+    <color name="divider">#E2E2E2</color>
+    <!-- Default -->
+    <color name="yellow">#FFAA00</color>
+    <color name="green">#228B22</color>
+    <color name="brown">#A24F00</color>
+    <color name="grey">#F1F1F1</color>
+    <color name="crimson">#401509</color>
+    <color name="white">#ffffff</color>
+    <color name="unusable_color">#999999</color>
+    <color name="orange">#FE8B1F</color>
+    <color name="blue">#54A1FF</color>
+    <color name="black">#000000</color>
+    <color name="red">#CD0000</color>
+    <color name="check_code">#EEF7FE</color>
+    <color name="text_color">#919191</color>
+    <color name="transparent">#50000000</color>
+    <color name="click_list_bg">#ffb90f</color>
+    <color name="text_bg_color">#ffb601</color>
+    <color name="button_text_color">#ffa800</color>
+    <color name="default_text_color">#ff112233</color>
+    <!-- 设置界面 -->
+    <color name="set_item_color">#000000</color>
+    <color name="set_border_color">#ffffff</color>
+    <color name="set_content_color">#40ffffff</color>
+    <color name="list_item_bg">#00000000</color>
+<!-- share -->
+    <color name="body_text_1">#ff000000</color>
+    <color name="body_text_2">#99000000</color>
+    <color name="body_text_disabled">#66000000</color>
+    <color name="body_text_1_inverse">#ffffffff</color>
+    <color name="body_text_2_inverse">#99ffffff</color>
+    <color name="accent_1">#ff29549f</color>
+    <color name="hyperlink">#ffff549f</color>
+    <color name="background_1">#ffffffff</color>
+    <color name="whats_on_separator">#4d000000</color>
+    <color name="all_track_color">#ff222222</color>
+    <color name="block_column_1">#ff0fabff</color>
+    <color name="block_column_2">#ffdf1831</color>
+    <color name="block_column_3">#ff009939</color>
+</resources>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="appname">产品杂志</string>
+    <string name="siteID">6279</string>
+    <string name="siteDomain">http://2.c.eimslab.cn</string>
+
+    <string name="phone">18674603230</string>
+    <string name="WEIXIN_ID">wx63b1f8828bccbd8d</string>
+    <string name="hello_world">Hello world!</string>
+    <!-- 首页 -->
+    <string name="txt_main_navdesc">栏目名称</string>
+    <string name="txt_main_navname">栏目介绍</string>
+    <!-- 产品类别 -->
+    <string name="txt_categary">产品类别</string>
+    <string name="txt_producttype_title">产品标题</string>
+    <string name="txt_producttype_desc">这里是产品的详细介绍....</string>
+    <string name="txt_producttype_desc1">这里是产品的详细介绍....</string>
+
+    <!-- 产品详情 -->
+    <string name="txt_product">产品详情</string>
+    <string name="txt_tuijian">推荐</string>
+    <string name="txt_notify">新的产品</string>
+    <string name="txt_search_result">搜索结果</string>
+    <string name="txt_product_gallery_btn">相册</string>
+    <string name="txt_product_number">编号：89757</string>
+    <string name="txt_product_type">包藏万心</string>
+    <string name="txt_product_name">探索灵魂之源</string>
+    <string name="txt_product_desc">探索灵魂之源</string>
+    <!-- 产品分享 -->
+    <string name="txt_product_share_title">分享</string>
+    <string name="txt_product_share_sina">分享至新浪微博</string>
+    <string name="txt_product_share_qzone">分享至QQ空间</string>
+    <string name="txt_product_share_tencent">分享至腾讯微博</string>
+    <string name="txt_product_share_renren">分享至人人网</string>
+    <string name="txt_product_share_cancel">取消</string>
+    <!-- 相册 -->
+    <string name="txt_gallery_desc">探索灵魂之源</string>
+    <!-- 设置 -->
+    <string name="txt_setting">设置</string>
+    <string name="txt_return">返回</string>
+    <string name="txt_push">推送设置</string>
+    <string name="txt_clearcache">清除缓存</string>
+    <string name="txt_share">分享</string>
+    <string name="txt_update">检测版本</string>
+    <!-- 有版本更新 -->
+    <string name="txt_update_msg">检测到新版本，是否进行更新？</string>
+    <string name="txt_update_ok">马上更新</string>
+    <string name="txt_download_cancel">取消</string>
+    <string name="txt_update_cancel">暂不更新</string>
+    <string name="txt_download">正在下载更新</string>
+    <string name="txt_download_pro">下载进度</string>
+    <!-- 清除缓存 -->
+    <string name="txt_btn_ok">确定</string>
+    <string name="txt_btn_cancel">取消</string>
+    <string name="txt_warn_title">提示</string>
+    <string name="txt_warn_content">确定清除缓存吗?</string>
+    <!-- 意见反馈 -->
+    <string name="txt_feedback">意见反馈</string>
+    <string name="txt_submit">提交</string>
+    <string name="txt_feedback_hint">欢迎您在这发表宝贵的意见</string>
+    <string name="txt_email_hint">邮箱：选填，以便我们给您回复</string>
+    <string name="txt_mobile_hint">电话：选填，以便我们给您回复</string>
+    <!-- 分享页面 -->
+    <string name="txt_cancel">取消</string>
+    <string name="txt_sina_weibo">新浪微博</string>
+    <string name="txt_qzone">QQ空间</string>
+    <string name="txt_tencent_weibo">腾讯微博</string>
+    <string name="txt_laiwang">来往</string>
+    <!-- 关于 -->
+    <string name="txt_about">关于</string>
+    <string name="txt_addr">公司地址：广东深圳宝安F518创意园</string>
+    <string name="txt_email">客服邮箱：zengwentao@eims.com</string>
+    <!-- 震动拨打电话 -->
+    <string name="shake_title">拨打电话提示</string>
+    <string name="shake_ok">确定</string>
+    <string name="shake_cancel">取消</string>
+    <!-- HTTP -->
+    <string name="httpError">HTTP CONNECTION EORROR</string>
+
+    <!-- menu -->
+    <string name="menu_item_clear_memory_cache">Clear memory cache</string>
+    <string name="menu_item_clear_disc_cache">Clear disc cache</string>
+    <string name="menu_item_pause_on_scroll">Pause on scroll</string>
+    <string name="menu_item_pause_on_fling">Pause on fling</string>
+
+    <!-- 加载更多 -->
+
+    <string name="loding">正在加载，请售后</string>
+    <string name="lodemore">点击加载更多</string>
+
+    <!-- 下拉刷新和上拉加载更多的文本 -->
+    <string name="pull_to_refresh_header_hint_normal2">上拉可以刷新</string>
+    <string name="pushmsg_center_pull_down_text">下拉可以刷新</string>
+    <string name="pull_to_refresh_header_hint_ready">松开后刷新</string>
+    <string name="pushmsg_center_pull_down_update_time">最后更新时间 : </string>
+    <string name="pull_to_refresh_footer_hint_ready">松开载入更多</string>
+    <string name="pull_to_refresh_header_hint_loading">正在加载中…</string>
+    <string name="pull_to_refresh_network_error">网络不给力，请检查网络</string>
+    <string name="pushmsg_center_has_more_msg">向下滑动,加载更多</string>
+    <string name="pushmsg_center_no_more_msg">已经到底啦</string>
+
+    <!-- update -->
+    <string name="soft_update_no">已经是最新版本</string>
+    <string name="soft_update_title">软件更新</string>
+    <string name="soft_update_info">检测到新版本，立即更新吗</string>
+    <string name="soft_update_updatebtn">更新</string>
+    <string name="soft_update_later">稍后更新</string>
+    <string name="soft_updating">正在更新</string>
+    <string name="soft_update_cancel">取消</string>
+    <!-- 网络访问 -->
+    <string name="dialog_loading">正在加载，请稍后...</string>
+
+    <!-- 分享 -->
+    <string name="UMENG_ID">53081bdb56240bbba206a5d5</string>
+    <string name="share_start">分享开始</string>
+    <string name="share_cancel">分享取消</string>
+    <string name="share_doing">分享中…</string>
+    <string name="share_over">分享完成</string>
+    <!-- share -->
+    <string name="action_settings">设置</string>
+    <string name="actionbar_activity_not_found">Failed to open intent...</string>
+    <string name="share_by_weixin">微信分享</string>
+    <string name="share_by_qq">QQ分享</string>
+    <string name="share_by_yixin">易信分享</string>
+    <string name="shake_share">注册摇一摇截图->分享</string>
+    <string name="shake_openshare">注册摇一摇打开分享面板</string>
+    <string name="shake_scrshot">注册摇一摇截图</string>
+    <string name="take_scrshot">直接截图</string>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="stop">停止</string>
+    <string name="quit">退出</string>
+    <string name="video_start_time">00:00</string>
+    <string name="goto_video">摇一摇视频截图Activity</string>
+    <string name="goto_game">游戏Activity</string>
+    <string name="goto_common">普通Activity</string>
+    <string name="video">VideoActivity</string>
+    <string name="game">GameActivity</string>
+    <string name="common">CommonActivity</string>
+    <string name="back">返回</string>
+    <string name="goto_facebook">添加Facebook分享</string>
+    <string name="fb_login">Facebook登录</string>
+    <string name="fb_logout">Facebook注销</string>
+    <string name="fb_share">Facebook分享</string>
+    <string name="laiwang_share">来往分享</string>
+    <string name="instagram_share">Instagram分享</string>
+    <string name="fb_app_id">567261760019884</string>
+    <string name="photo_post">Photo Post</string>
+    <string name="success">Success</string>
+    <string name="successfully_posted_post">Successfully posted \'%1$s\'.\nPost ID: %2$s</string>
+    <string name="error">Error</string>
+    <string name="status_update">Updating Facebook status at </string>
+    <string name="ok">OK</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="permission_not_granted">Unable to perform selected action because permissions were not granted.</string>
+
+</resources>

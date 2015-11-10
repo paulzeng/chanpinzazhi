@@ -1,0 +1,115 @@
+package com.chanpinzazhi.manager;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.LogManager;
+
+import org.xmlpull.v1.XmlPullParser;
+
+import android.util.Xml;
+
+import com.nostra13.universalimageloader.utils.L;
+
+public class XmlParseManager {
+	private static final String TAG = "XmlParseManager";
+
+	public static Map<String, String> parseNav(String result) throws Exception {
+		InputStream xml = new ByteArrayInputStream(result.getBytes());
+		XmlPullParser parser = Xml.newPullParser();
+		parser.setInput(xml, "utf-8");
+		Map<String, String> map = new HashMap<String, String>();
+		int eventType = parser.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			switch (eventType) {
+			case XmlPullParser.START_DOCUMENT:
+
+				break;
+			case XmlPullParser.START_TAG:
+				String name = parser.getName();
+				if (name.equalsIgnoreCase("Result")) {
+					String mumber = parser.getAttributeValue(null, "Number");
+					map.put("Number", mumber);
+					if (mumber.equals("1")) {
+						L.e(TAG, "栏目请求成功");
+					} else {
+						L.e(TAG, "栏目请求失败");
+					}
+					break;
+				} else if (name.equalsIgnoreCase("Id")) {
+					eventType = parser.next();
+					String id = parser.getText();
+					id = 3 + "";
+					map.put("_id", id);
+					break;
+				} else if (name.equalsIgnoreCase("APP_Name")) {
+					eventType = parser.next();
+					String nav_name = parser.getText();
+					map.put("_name", nav_name);
+					break;
+				} else if (name.equalsIgnoreCase("APP_Description")) {
+					eventType = parser.next();
+					String nav_desc = parser.getText();
+					map.put("_desc", nav_desc);
+
+					break;
+				}
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equalsIgnoreCase("Result")) {
+
+				}
+				break;
+			}
+			eventType = parser.next();
+		}
+		return map;
+	}
+
+	/**
+	 * 解析版本信息
+	 * 
+	 * @param config_result
+	 * @return
+	 */
+	public static Map<String, String> parseAppConfig(String config_result)
+			throws Exception {
+		InputStream xml = new ByteArrayInputStream(config_result.getBytes());
+		XmlPullParser parser = Xml.newPullParser();
+		parser.setInput(xml, "utf-8");
+		Map<String, String> map = new HashMap<String, String>();
+		int eventType = parser.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			switch (eventType) {
+			case XmlPullParser.START_DOCUMENT:
+
+				break;
+			case XmlPullParser.START_TAG:
+				String name = parser.getName();
+				if (name.equalsIgnoreCase("Result")) {
+					String mumber = parser.getAttributeValue(null, "Number");
+					map.put("Number", mumber);
+					if (mumber.equals("1")) {
+						System.out.print("栏目请求成功");
+					} else {
+						System.out.print("栏目请求失败");
+					}
+					break;
+				} else if (name.equalsIgnoreCase("11164")) {
+					eventType = parser.next();
+					String version = parser.getText(); 
+					map.put("version", version);
+					break;
+				} 
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equalsIgnoreCase("Result")) {
+
+				}
+				break;
+			}
+			eventType = parser.next();
+		}
+		return map;
+	}
+
+}

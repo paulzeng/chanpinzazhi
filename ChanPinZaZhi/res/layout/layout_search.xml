@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/search_bg"
+    android:orientation="vertical" >
+
+    <com.chanpinzazhi.view.ClearEditText
+        android:background="@drawable/search_bar_edit_selector"
+        android:id="@+id/search_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:layout_gravity="center"  
+        android:drawableLeft="@drawable/search_bar_icon_normal"
+        android:hint="请输入关键字"
+        android:singleLine="true"
+        android:textSize="15.0dip" />
+
+    <ExpandableListView
+        android:id="@+id/myExpandableListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp" >
+    </ExpandableListView>
+
+</LinearLayout>

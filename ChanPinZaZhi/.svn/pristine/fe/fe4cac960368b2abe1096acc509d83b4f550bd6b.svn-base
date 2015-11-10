@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/feedback_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/layout_top" />
+
+    <LinearLayout
+        android:id="@+id/spinnerid"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp" 
+        android:layout_marginTop="10dp" 
+        android:background="@drawable/preference_single_item"
+        android:gravity="right" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center" 
+            android:textSize="@dimen/feedback_btn_submit_size" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/feedback_btn_submit_size" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/mm_submenu_dropdown" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edt_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/feedback_edt_bg"
+        android:gravity="left|top"
+        android:hint="@string/txt_feedback_hint"
+        android:inputType="textMultiLine"
+        android:minLines="6"
+        android:padding="5dp"
+        android:textColor="@color/feedback_edt_content_color"
+        android:textSize="@dimen/feedback_edt_size" />
+
+    <EditText
+        android:id="@+id/edt_email"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_margin="10dp"
+        android:background="@drawable/border_transp_bg"
+        android:gravity="left|center_vertical"
+        android:hint="@string/txt_email_hint"
+        android:inputType="textMultiLine"
+        android:minLines="1"
+        android:padding="5dp" 
+        android:textColor="@color/feedback_edt_content_color"
+        android:textSize="@dimen/feedback_edt_size" />
+
+    <EditText
+        android:id="@+id/edt_mobile"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_margin="10dp"
+        android:background="@drawable/border_transp_bg"
+        android:gravity="left|center_vertical"
+        android:hint="@string/txt_mobile_hint"
+        android:inputType="textMultiLine"
+        android:minLines="1"
+        android:padding="5dp"
+        android:textColor="@color/feedback_edt_content_color"
+        android:textSize="@dimen/feedback_edt_size" />
+
+    <Button
+        android:id="@+id/btn_post"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/feedback_btn"
+        android:text="@string/txt_submit"
+        android:textColor="@color/feedback_btn_submit_color"
+        android:textSize="@dimen/feedback_btn_submit_size" />
+
+</LinearLayout>

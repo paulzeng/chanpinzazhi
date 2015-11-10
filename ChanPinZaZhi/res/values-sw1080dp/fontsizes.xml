@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 首页 -->
+    <dimen name="main_navdesc_size">20sp</dimen>
+    <dimen name="main_navname_size">20sp</dimen>
+    <!-- 产品类别 -->
+    <dimen name="producttype_title_size">18sp</dimen>
+    <dimen name="producttype_desc_size">16sp</dimen>
+    <!-- 产品详情 -->
+    <dimen name="product_name_size">18sp</dimen>
+    <dimen name="product_number_size">20sp</dimen>
+    <dimen name="product_title_size">18sp</dimen>
+    <dimen name="product_desc_size">16sp</dimen>
+    <dimen name="product_tuijian_size">16sp</dimen>
+    <dimen name="product_tj_item_size">16sp</dimen>
+
+    <!-- 相册 -->
+    <dimen name="gallery_desc_size">18sp</dimen>
+    
+    <!-- 设置 -->
+    <dimen name="set_item_size">18sp</dimen>
+	
+    <!-- 意见反馈 -->
+    <dimen name="feedback_btn_submit_size">18sp</dimen>
+    <dimen name="feedback_edt_size">20sp</dimen>
+    
+    <!-- 版本更新 -->
+    <dimen name="dialog_title_size">22sp</dimen>
+    <dimen name="dialog_content_size">18sp</dimen>
+    <dimen name="dialog_btn_size">20sp</dimen>
+    
+    <!-- 头部 -->
+    <dimen name="title_size">20sp</dimen>
+    
+    <!-- 下拉刷新字体 -->
+    <dimen name="refresh_loading_text_size">18dp</dimen>
+    <dimen name="refresh_time_text_size">14dp</dimen>
+    
+    <!-- 菜单 -->
+    <dimen name="parent_groups_size">20sp</dimen>
+    <dimen name="parent_size">20sp</dimen>
+    <dimen name="child_size">20sp</dimen>
+</resources>

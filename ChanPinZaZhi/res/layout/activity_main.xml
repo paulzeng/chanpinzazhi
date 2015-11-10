@@ -1,0 +1,106 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    tools:context=".MyActivity" >
+
+    <include
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/layout_top" />
+
+    <LinearLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/main_column"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/main_navdesc_bg"
+            android:gravity="center"
+            android:text="@string/txt_main_navdesc"
+            android:textColor="@color/main_navdesc_color"
+            android:textSize="@dimen/main_navdesc_size" />
+
+        <LinearLayout
+            android:id="@+id/main_columnname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/main_navname_bg"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tv_main_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/txt_main_navname"
+                android:textColor="@color/main_navname_color"
+                android:textSize="@dimen/main_navname_size" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/set_down_arrow"
+                android:contentDescription="@string/appname"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom"
+        android:layout_below="@id/top"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical" >
+
+        <FrameLayout
+                android:id="@+id/slider"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent" 
+                android:background="#ffffff" >
+
+                <com.chanpinzazhi.view.ViewFlow
+                    android:id="@+id/viewflow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+                </com.chanpinzazhi.view.ViewFlow>
+ <!--  android:background="#00888888" -->
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                  android:background="#00888888"
+                    android:gravity="right" >
+
+                    <com.chanpinzazhi.view.CircleFlowIndicator
+                        android:id="@+id/viewflowindic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginRight="9dip"
+                        android:paddingBottom="6dip"
+                        android:paddingLeft="2dip"
+                        android:paddingRight="1dip"
+                        android:paddingTop="6dip"
+                       app:radius="5dp"
+  app:activeColor="#ff000000"
+    app:inactiveColor="#ff000000"
+                         />
+                </LinearLayout>
+            </FrameLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

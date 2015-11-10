@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources> 
+    <!-- 头部 -->
+    <color  name="title_color">#ffffff</color>
+    <!-- 首页 -->
+    <color name="main_navdesc_color">#9b7e4c</color>
+    <color name="main_navname_color">#c3a460</color>
+    <!-- 产品类别 -->
+    <color name="producttype_title_color">#dea94f</color>
+    <color name="producttype_desc_color">#ffffff</color>
+    
+   
+    <!-- 产品详情 --> 
+    <color name="product_number_color">#b29058</color>
+    <color name="product_title_color">#ffffff</color>
+    <color name="product_name_color">#b29058</color>
+    <color name="product_desc_color">#ffffff</color> 
+    <color name="product_tuijian_color">#ffffff</color> 
+    <color name="product_tj_item_color">#808080</color>
+    
+    <!-- 相册 -->
+    <color name="gallery_desc_color">#a48450</color>
+    
+    <!-- 版本更新对话框 -->
+    <color name="dialog_title_color">#ffffff</color>
+	<color name="dialog_content_color">#1a1a1a</color>
+    <color name="dialog_btn_color">#1a1a1a</color>
+    <!-- 反馈界面 -->
+    <color name="feedback_edt_content_color">#ababab</color>
+	<color name="feedback_btn_submit_color">#ffffff</color>
+    <!-- 分享界面 -->
+    <color name="share_icon_name_color">#7f7f7f</color>
+    <color name="share_btn_cancel_color">#7a5831</color>
+    
+    <!-- 下拉刷新界面中最后更新时间的文字色 -->
+    <color name="refresh_loading_text_color">#ffffff</color>
+    <color name="refresh_time_text_color">#ffffff</color>
+    
+    <!-- 菜单 -->
+    <color name="parent_groups_color">#1a1a1a</color>
+    <color name="parent_color">#616161</color>
+    <color name="child_color">#616161</color>
+</resources>

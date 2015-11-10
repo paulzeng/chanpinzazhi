@@ -1,0 +1,287 @@
+package com.chanpinzazhi.adapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
+import android.widget.TextView;
+
+import com.chanpinzazhi.R;
+import com.chanpinzazhi.manager.DensityUtil;
+import com.chanpinzazhi.manager.DeviceManager;
+import com.chanpinzazhi.manager.ToastManager;
+import com.chanpinzazhi.soap.SoapConstants;
+import com.chanpinzazhi.soap.SoapHttpRequest;
+import com.chanpinzazhi.ui.ChanpinActivity;
+
+/**
+ * 
+ * 一级菜单目录结构列表显示
+ * 
+ **/
+public class SuperTreeViewAdapter extends BaseExpandableListAdapter {
+
+	public static int height;
+	public static boolean[][] towIsOpen;
+	public static boolean[][] twoSizeBoolean;
+	public static int twoChildSize;
+
+	private Handler handler;
+
+	public void setHandler(Handler handler) {
+		this.handler = handler;
+	}
+
+	static public class SuperTreeNode {
+		public Object parent;
+		// 二级树形菜单的结构体
+		public List<TreeViewAdapter.TreeNode> childs = new ArrayList<TreeViewAdapter.TreeNode>();
+	}
+
+	private List<SuperTreeNode> superTreeNodes = new ArrayList<SuperTreeNode>();
+	private Context parentContext;
+
+	public SuperTreeViewAdapter(Context view, Handler handler) {
+		parentContext = view;
+		this.handler = handler;
+	}
+
+	public List<SuperTreeNode> GetTreeNode() {
+		return superTreeNodes;
+	}
+
+	public void UpdateTreeNode(List<SuperTreeNode> node) {
+		superTreeNodes = node;
+	}
+
+	public void RemoveAll() {
+		superTreeNodes.clear();
+	}
+
+	public Object getChild(int groupPosition, int childPosition) {
+		return superTreeNodes.get(groupPosition).childs.get(childPosition);
+	}
+
+	public int getChildrenCount(int groupPosition) {
+		return superTreeNodes.get(groupPosition).childs.size();
+	}
+
+	public ExpandableListView getExpandableListView() {
+		AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+				ViewGroup.LayoutParams.FILL_PARENT, TreeViewAdapter.ItemHeight);
+		ExpandableListView superTreeView = new ExpandableListView(parentContext);
+		superTreeView.setLayoutParams(lp);
+		return superTreeView;
+	}
+
+	/** 二、三级为一个ExpandableListView */
+	public View getChildView(int groupPosition, int childPosition,
+			boolean isLastChild, View convertView, ViewGroup parent) {
+		// 子ExpandListView
+		twoChildSize = childPosition;
+		final ExpandableListView treeView = getExpandableListView();
+		final int mChildPosition = childPosition;
+		final int mGroupPosition = groupPosition;
+
+		treeView.setDivider(null);
+		treeView.setGroupIndicator(null);
+
+		final TreeViewAdapter treeViewAdapter = new TreeViewAdapter(
+				this.parentContext, 0);
+		final List<TreeViewAdapter.TreeNode> tmp = treeViewAdapter
+				.GetTreeNode();// 临时变量取得TreeViewAdapter的TreeNode集合，可为空
+		final TreeViewAdapter.TreeNode treeNode = (TreeViewAdapter.TreeNode) getChild(
+				groupPosition, childPosition);
+		int twoSizeGroup = superTreeNodes.size();
+		int twoSizeChild = superTreeNodes.get(mGroupPosition).childs.size();
+		System.out.println("twoSizeGroup==" + twoSizeGroup + "||twoSizeChild=="
+				+ twoSizeChild);
+		twoSizeBoolean = new boolean[twoSizeGroup][twoSizeChild];
+		towIsOpen = new boolean[twoSizeGroup][twoSizeChild];
+		for (int j = 0; j < twoSizeGroup; j++) {
+			for (int i = 0; i < twoSizeChild; i++) {
+				if (superTreeNodes.get(mGroupPosition).childs
+						.get(mChildPosition).childs.size() == 0)
+					twoSizeBoolean[j][i] = false;
+				else
+					twoSizeBoolean[j][i] = true;
+			}
+		}
+		tmp.add(treeNode);
+		treeViewAdapter.UpdateTreeNode(tmp);
+		treeView.setAdapter(treeViewAdapter);
+
+		// 第三级点击事件处理
+		treeView.setOnChildClickListener(new OnChildClickListener() {
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id1) {
+				// TODO Auto-generated method stub
+				int threeTypeId = Integer.parseInt(treeNode.childs.get(
+						childPosition).getId());
+				ToastManager.show(parentContext, "id=" + threeTypeId);
+				initMenuSearch(threeTypeId, handler);
+				return false;
+			}
+		});
+
+		/** 关键点：第二级菜单展开时通过取得节点数来设置第三级菜单的大小 */
+		treeView.setOnGroupExpandListener(new OnGroupExpandListener() {
+			@Override
+			public void onGroupExpand(int groupPosition) {
+				AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+						ViewGroup.LayoutParams.FILL_PARENT, (treeNode.childs
+								.size())
+								* height
+								+ DensityUtil.dip2px(
+										ChanpinActivity.subProCate, 40));
+				treeView.setLayoutParams(lp);
+				// 判断是否有第三级内容
+				twoChildSize = mChildPosition;
+				if (superTreeNodes.get(mGroupPosition).childs
+						.get(mChildPosition).childs.size() == 0) {
+					int secTypeId = Integer.parseInt(superTreeNodes
+							.get(mGroupPosition).childs.get(mChildPosition).typeId);
+					ToastManager.show(parentContext, "id=" + secTypeId);
+					initMenuSearch(secTypeId, handler);
+					twoSizeBoolean[mGroupPosition][mChildPosition] = false;
+					towIsOpen[mGroupPosition][mChildPosition] = false;
+				} else {
+					twoSizeBoolean[mGroupPosition][mChildPosition] = true;
+					towIsOpen[mGroupPosition][mChildPosition] = true;
+				}
+
+			}
+		});
+
+		/** 第二级菜单回收时设置为标准Item大小 */
+		treeView.setOnGroupCollapseListener(new OnGroupCollapseListener() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onGroupCollapse(int groupPosition) {
+
+				AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+						ViewGroup.LayoutParams.FILL_PARENT, DensityUtil.dip2px(
+								ChanpinActivity.subProCate, 40));
+				treeView.setLayoutParams(lp);
+				// 判断是否有第三级内容
+				twoChildSize = mChildPosition;
+				if (superTreeNodes.get(mGroupPosition).childs
+						.get(mChildPosition).childs.size() == 0) {
+
+					int secTypeId = Integer.parseInt(superTreeNodes
+							.get(mGroupPosition).childs.get(mChildPosition).typeId);
+					ToastManager.show(parentContext, "id=" + secTypeId);
+					initMenuSearch(secTypeId, handler);
+					twoSizeBoolean[mGroupPosition][mChildPosition] = false;
+					towIsOpen[mGroupPosition][mChildPosition] = false;
+				} else {
+					twoSizeBoolean[mGroupPosition][mChildPosition] = true;
+					towIsOpen[mGroupPosition][mChildPosition] = false;
+				}
+
+			}
+		});
+		treeView.setPadding(0, 0, 0, 0);
+		return treeView;
+	}
+
+	/** 第一级 */
+	public View getGroupView(int groupPosition, boolean isExpanded,
+			View convertView, ViewGroup parent) {
+
+		TextView groupTextView = null;
+		if (convertView == null) {
+			convertView = LayoutInflater.from(parentContext).inflate(
+					R.layout.parent_groups, null);
+		}
+		groupTextView = (TextView) convertView
+				.findViewById(R.id.tv_parent_groups);
+		// TODO
+		height = DensityUtil.dip2px(ChanpinActivity.subProCate, 40);
+		groupTextView.setText(getGroup(groupPosition).toString());
+		// 为了处理图标被拉伸的问题！这里采用偷懒的办法让textView傍边产生一个图标，如果GroupView只是一个TextView的话，推荐这样做！
+		if (ChanpinActivity.sizeBoolean[groupPosition]) {
+			if (ChanpinActivity.isOpen[groupPosition]) {
+				Drawable leftDrawable = parentContext.getResources()
+						.getDrawable(R.drawable.open_child_up);
+				leftDrawable.setBounds(0, 0, leftDrawable.getMinimumWidth(),
+						leftDrawable.getMinimumHeight());
+				groupTextView.setCompoundDrawables(leftDrawable, null, null,
+						null);
+			} else if (!ChanpinActivity.isOpen[groupPosition]) {
+				Drawable leftDrawable = parentContext.getResources()
+						.getDrawable(R.drawable.close_child_up);
+				leftDrawable.setBounds(0, 0, leftDrawable.getMinimumWidth(),
+						leftDrawable.getMinimumHeight());
+				groupTextView.setCompoundDrawables(leftDrawable, null, null,
+						null);
+			}
+		} else {
+			Drawable leftDrawable = parentContext.getResources().getDrawable(
+					R.drawable.open_child_up);
+			leftDrawable.setBounds(0, 0, leftDrawable.getMinimumWidth(),
+					leftDrawable.getMinimumHeight());
+			groupTextView.setCompoundDrawables(leftDrawable, null, null, null);
+		}
+
+		return convertView;
+	}
+
+	public long getChildId(int groupPosition, int childPosition) {
+		return childPosition;
+	}
+
+	public Object getGroup(int groupPosition) {
+		return superTreeNodes.get(groupPosition).parent;
+	}
+
+	public int getGroupCount() {
+		return superTreeNodes.size();
+	}
+
+	public long getGroupId(int groupPosition) {
+		return groupPosition;
+	}
+
+	public boolean isChildSelectable(int groupPosition, int childPosition) {
+		return true;
+	}
+
+	public boolean hasStableIds() {
+		return true;
+	}
+
+	/**
+	 * 通过类别Id进行搜索
+	 * 
+	 * @param typeId
+	 */
+	void initMenuSearch(int typeId, Handler mHandler) {
+		SoapHttpRequest request = new SoapHttpRequest(parentContext);
+
+		request.GetByNavigateId(
+				SoapConstants.GETSEARCH,
+				parentContext,
+				mHandler,
+				DeviceManager.getMyUUID(parentContext),
+				4,
+				2,
+				"[Id],[App_TypeName],[Name],[App_Introduce],[App_BigImageUrl],[RelatedImages]",
+				"[App_IsShow]=1 and [TypeId] in (select [Id] from T_ProductTypes where [ParentIDList] like '%,"
+						+ typeId + ",%')" + "or [TypeId] = " + typeId,
+				"[Order] DESC", 0, 10, "", false, "2014-04-10 08:55:00", false);
+	}
+
+}

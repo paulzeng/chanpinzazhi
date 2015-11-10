@@ -1,0 +1,531 @@
+package com.chanpinzazhi.ui;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.xmlpull.v1.XmlPullParser;
+
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Html;
+import android.util.Xml;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.chanpinzazhi.R;
+import com.chanpinzazhi.db.DBCategoryService;
+import com.chanpinzazhi.entity.Category;
+import com.chanpinzazhi.manager.DeviceManager;
+import com.chanpinzazhi.manager.L;
+import com.chanpinzazhi.manager.NetManager;
+import com.chanpinzazhi.manager.PreferenceManager;
+import com.chanpinzazhi.manager.StringManager;
+import com.chanpinzazhi.manager.TitleManager;
+import com.chanpinzazhi.manager.ToastManager;
+import com.chanpinzazhi.manager.UIManager;
+import com.chanpinzazhi.refresh.MyListView;
+import com.chanpinzazhi.refresh.PullToRefreshBase;
+import com.chanpinzazhi.refresh.PullToRefreshBase.OnRefreshListener;
+import com.chanpinzazhi.refresh.PullToRefreshListView;
+import com.chanpinzazhi.soap.SoapConstants;
+import com.chanpinzazhi.soap.SoapHttpRequest;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
+public class ProductActivity extends BaseActivity implements OnClickListener,
+		OnItemClickListener {
+	private static final String TAG = "ProductActivity";
+	private ImageView setting_btn;
+	private ImageView return_btn;
+	ArrayList<Category> mData = new ArrayList<Category>();
+	ArrayList<Category> mNewData;
+	ArrayList<Category> mDbData = new ArrayList<Category>();
+	DBCategoryService service;
+	private PullToRefreshListView mPullListView;
+	private ListView mListView;
+	private SimpleDateFormat mDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+	private boolean mIsStart = true;
+	private int mCurIndex = 0;
+	private ItemAdapter adapter;
+	private TextView emptyView;
+	private int index;
+	private boolean isPullDown;
+	private String lastCacheTime;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_chanpinleibie_list);
+		TitleManager.showTitle(this, new int[] { 1, 2 }, R.string.txt_categary);
+		initOption();
+		initView();
+		initData();
+
+	}
+
+	@SuppressLint("NewApi")
+	private void initView() {
+		return_btn = (ImageView) findViewById(R.id.btn_return);
+		return_btn.setOnClickListener(this);
+		setting_btn = (ImageView) findViewById(R.id.btn_setting);
+		setting_btn.setOnClickListener(this);
+
+		mPullListView = (PullToRefreshListView) findViewById(R.id.productlistview);
+
+		mPullListView.setPullLoadEnabled(false);
+		mPullListView.setScrollLoadEnabled(true);
+		mListView = mPullListView.getRefreshableView();  
+		mListView.setScrollingCacheEnabled(false);
+		// 设置分割线
+		// Drawable mDrawable = this.getResources().getDrawable(
+		// R.drawable.product_line);
+		mListView.setDivider(null);
+		adapter = new ItemAdapter();
+		mListView.setAdapter(adapter);
+		setEmptyView();
+		mListView.setOnItemClickListener(this);
+		mPullListView.setOnRefreshListener(new OnRefreshListener<MyListView>() {
+			@Override
+			public void onPullDownToRefresh(
+					PullToRefreshBase<MyListView> refreshView) {
+				// TODO获取服务器最新的数据,isRefresh=true,上拉刷新，删除本地，从数据库获取最新
+				if (NetManager.isNetworkConnected(ProductActivity.this)) {
+					isPullDown = true;
+					L.e(TAG, "从第" + 0 + "条开始取最新的数据#####");
+					service.deleteAll();
+					initNetData(0, false, PreferenceManager.getString(
+							ProductActivity.this, "refresh_time",
+							formatDateTime()), true);
+					index = 0;
+					PreferenceManager.setLong(ProductActivity.this,
+							"lastupdateTime", System.currentTimeMillis());
+				} else {
+					ToastManager.show(ProductActivity.this, "网络不给力，请稍后重试");
+					mPullListView.onPullDownRefreshComplete();
+				}
+
+			}
+
+			@Override
+			public void onPullUpToRefresh(
+					PullToRefreshBase<MyListView> refreshView) {
+				// TODO从数据库中继续取数据
+				index++;
+				L.e(TAG, "从第" + SoapConstants.PAGESIZE * index + "条开始取#####");
+				mDbData = service.queryCategoryList(SoapConstants.PAGESIZE
+						* index, SoapConstants.PAGESIZE);
+				L.e(TAG, "取了" + mDbData.size() + "条");
+				// TODO 如果有数据，则从数据库中取
+				if (mDbData.size() != 0) {
+					// TODO从数据库中加载数据
+					mData.addAll(mDbData);
+					if (mDbData.size() != 0) {
+						L.e(TAG, "######取" + mDbData.size() + "条数据");
+						adapter.notifyDataSetChanged();
+						mPullListView.onPullUpRefreshComplete();
+					} else {
+						ToastManager.show(ProductActivity.this, "数据加载完成");
+						mPullListView.onPullUpRefreshComplete();
+						mPullListView.setHasMoreData(false);
+					}
+				}
+				// TODO如果数据库中的数据取完了，则从服务器去获取,从数据库的最后一条开始，向服务器取最新的
+				else {
+					isPullDown = false;
+					if (NetManager.isNetworkConnected(ProductActivity.this)) {
+						initNetData(mData.size(), false, PreferenceManager
+								.getString(ProductActivity.this,
+										"refresh_time", formatDateTime()), true);
+					} else {
+						ToastManager.show(ProductActivity.this, "数据加载完成");
+						mPullListView.onPullUpRefreshComplete();
+						mPullListView.setHasMoreData(false);
+					}
+				}
+
+			}
+		});
+		setLastUpdateTime();// 设置最后刷新事件
+	}
+
+	void initData() {
+		// 初始化数据库
+		service = new DBCategoryService(this);
+		// 从数据库查询第一页数据
+		mDbData = service.queryCategoryList(0, SoapConstants.PAGESIZE);
+		// TODO 1.数据库是否有缓存
+		if (isRefresh() && NetManager.isNetworkConnected(ProductActivity.this)) {
+			// 自动刷新
+			mPullListView.doPullRefreshing(true, 500);
+			PreferenceManager.setLong(this, "lastupdateTime",
+					System.currentTimeMillis());
+		} else {
+			if (mDbData.size() != 0) {
+				L.e(TAG, "数据库的总条数：" + service.queryCategoryList().size());
+				L.e(TAG, "从数据库的取出数据开始##############");
+				L.e(TAG, "从数据库的取出数据条数==" + mDbData.size());
+				mData.addAll(mDbData);
+				L.e(TAG, "列表数据总条数==" + mData.size());
+				adapter.notifyDataSetChanged();
+				// mListView.setAdapter(adapter);
+				mPullListView.onPullDownRefreshComplete();
+			}
+			// TODO 2.数据库中没有缓存
+			else {
+				// 从服务器获取最新的10条
+				initNetData(0, false, formatDateTime(), false);
+			}
+		}
+	}
+
+	void initNetData(int rowIndex, boolean isRefreshCache, String updateTime,
+			boolean flag) {
+		SoapHttpRequest request = new SoapHttpRequest(this);
+		// 请求最新的产品类别数据
+		request.GetByNavigateId(SoapConstants.GETCATEGORY, this, mHandler,
+				DeviceManager.getMyUUID(this), 4, 1,
+				"[Id],[App_ImageUrl],[App_Name],[App_Introduce]",
+				"[App_IsShow]=1 and Hierarchy=1", "[Id] DESC", rowIndex,
+				SoapConstants.PAGESIZE, "App_Introduce", isRefreshCache,
+				updateTime, flag);
+	}
+
+	// 解析请求结果
+	private void parseResult(String result) throws Exception {
+		InputStream xml = new ByteArrayInputStream(result.getBytes());
+		XmlPullParser parser = Xml.newPullParser(); //
+		parser.setInput(xml, "utf-8"); //
+		mNewData = new ArrayList<Category>();
+		Category mCategory = null;
+		int eventType = parser.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			switch (eventType) {
+			case XmlPullParser.START_DOCUMENT:
+
+				break;
+			case XmlPullParser.START_TAG:
+				String name = parser.getName();
+				if (name.equalsIgnoreCase("Result")) {
+					String mumber = parser.getAttributeValue(null, "Number");
+
+					lastCacheTime = parser.getAttributeValue(null,
+							"CurrentDateTime");
+					L.e(TAG, "服务器返回的时间==" + lastCacheTime);
+					if (mumber.equals("1")) {
+						L.e(TAG, "请求成功");
+					} else {
+						L.e(TAG, "请求失败"); 
+					}
+					break;
+				} else if (name.equalsIgnoreCase("Row")) {
+					mCategory = new Category();
+					break;
+				} else if (name.equalsIgnoreCase("Id")) {
+					eventType = parser.next();
+					int id = Integer.parseInt(parser.getText()); // 产品类别ID
+					mCategory.setmCategoryId(id);
+					break;
+				} else if (name.equalsIgnoreCase("App_ImageUrl")) {
+					eventType = parser.next();
+					String imageUrl = parser.getText(); // 类别图片的相对路径
+					mCategory.setmImgUrl(StringManager
+							.getImgUrl(this, imageUrl));
+					break;
+				} else if (name.equalsIgnoreCase("App_Name")) {
+					eventType = parser.next();
+					String categoryname = parser.getText(); // 类别的名称
+					mCategory.setmName(categoryname);
+					break;
+				} else if (name.equalsIgnoreCase("App_Introduce")) {
+					eventType = parser.next();
+					String introduce = parser.getText(); // 产品类别的介绍
+					mCategory.setmDesc(introduce);
+					break;
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equals("Row")) {
+					// mData.addFirst(mCategory);
+					mNewData.add(mCategory);
+					mCategory = null;
+				}
+				break;
+			}
+			eventType = parser.next();
+		}
+		if (mNewData.size() != 0) {
+			L.e(TAG, "本次获取数据的条数==" + mNewData.size());
+			service.addList(mNewData);
+			L.e(TAG, "插入数据库的条数==" + mNewData.size());
+			// TODO 如果是上拉刷新，把数据加载到底部,如果是下拉刷新,把数据加载到头部
+			if (!isPullDown) {
+				mData.addAll(mNewData);
+			} else {
+				// mNewData.addAll(mData);
+				mData = mNewData;
+			}
+			if (adapter != null) {
+				adapter.notifyDataSetChanged();
+			}
+		}
+	}
+
+	/**
+	 * 为没有数据时，设置视图
+	 */
+	void setEmptyView() {
+		emptyView = new TextView(this);
+		emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT));
+		emptyView.setText("暂时还没有类别");
+
+		emptyView.setGravity(Gravity.CENTER_HORIZONTAL
+				| Gravity.CENTER_VERTICAL);
+		emptyView.setVisibility(View.GONE);
+		emptyView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mPullListView.doPullRefreshing(true, 500);
+			}
+		});
+		((ViewGroup) mListView.getParent()).addView(emptyView);
+		mListView.setEmptyView(emptyView);
+	}
+
+	/**
+	 * 产品类别条目适配器
+	 * 
+	 * @author Administrator
+	 * 
+	 */
+	class ItemAdapter extends BaseAdapter {
+
+		public ItemAdapter() {
+
+		}
+
+		private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+
+		final class ViewHolder {
+			public ImageView img;
+			public TextView title;
+			public TextView info;
+		}
+
+		@Override
+		public int getCount() {
+			return mData.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
+			View view = convertView;
+			final ViewHolder holder;
+			if (convertView == null) {
+				holder = new ViewHolder();
+				view = getLayoutInflater().inflate(R.layout.item_chanpinleibie,
+						null);
+				holder.img = (ImageView) view.findViewById(R.id.img);
+				holder.title = (TextView) view.findViewById(R.id.title);
+				holder.info = (TextView) view.findViewById(R.id.info);
+				view.setTag(holder);
+			} else {
+				holder = (ViewHolder) view.getTag();
+			}
+
+			holder.title.setText(mData.get(position).getmName());
+			if (mData.get(position).getmDesc() != null) {
+				holder.info.setText(Html.fromHtml(mData.get(position)
+						.getmDesc()));
+			}
+			L.e(TAG, "产品类别图片==" + mData.get(position).getmImgUrl());
+			imageLoader.displayImage(mData.get(position).getmImgUrl(),
+					holder.img, options, animateFirstListener);
+
+			return view;
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		AnimateFirstDisplayListener.displayedImages.clear();
+		super.onBackPressed();
+	}
+
+	private static class AnimateFirstDisplayListener extends
+			SimpleImageLoadingListener {
+
+		static final List<String> displayedImages = Collections
+				.synchronizedList(new LinkedList<String>());
+
+		@Override
+		public void onLoadingComplete(String imageUri, View view,
+				Bitmap loadedImage) {
+			if (loadedImage != null) {
+				ImageView imageView = (ImageView) view;
+				boolean firstDisplay = !displayedImages.contains(imageUri);
+				if (firstDisplay) {
+					FadeInBitmapDisplayer.animate(imageView, 500);
+					displayedImages.add(imageUri);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_setting:
+			UIManager.switcher(this, SettingActivity.class);
+			break;
+
+		case R.id.btn_return:
+			finish();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		Category mCategory = (Category) mData.get(position);
+		int categoryId = (Integer) mCategory.getmCategoryId();
+		Map<String, Object> extras = new HashMap<String, Object>();
+		extras.put("id", categoryId);
+		extras.put("name", mCategory.getmName());
+		UIManager.switcher(ProductActivity.this, ChanpinActivity.class, extras);
+	}
+
+	// 保存最后一次刷新的时间
+	private void setLastUpdateTime() {
+		String text = formatDateTime();
+		mPullListView.setLastUpdatedLabel(text);
+		PreferenceManager.setString(this, "refresh_time", text);
+	}
+
+	// 格式化日期
+	private String formatDateTime() {
+		long updateTime = System.currentTimeMillis();
+		String timestamp = StringManager.getTime(updateTime);
+		return timestamp;
+	}
+
+	// 判断时候需要刷新
+	private boolean isRefresh() {
+		long lastTime = PreferenceManager.getLong(this, "lastupdateTime");
+		L.e(TAG, "上次刷新时间：" + lastTime);
+		long noewTime = System.currentTimeMillis();
+		L.e(TAG, "本次时间：" + noewTime);
+		long time = noewTime - lastTime;
+		L.e(TAG, "间隔事件==" + time);
+		if (time >= 60 * 1000) {
+			L.e(TAG, "需要刷新");
+			return true;
+		} else {
+			L.e(TAG, "不需要刷新");
+			return false;
+		}
+	}
+
+	private Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case SoapConstants.FAIL_RESULT:
+			case SoapConstants.NO_NET:
+				ToastManager.show(ProductActivity.this, "网络不给力，请稍后重试");
+				mPullListView.onPullDownRefreshComplete();
+				break;
+			case SoapConstants.FAIL_XML_RESULT:
+				ToastManager.show(ProductActivity.this, "字段解析出错");
+				break;
+			case SoapConstants.TIMEOUT_RESULT:
+				ToastManager.show(ProductActivity.this, "请求超时");
+				break;
+			case SoapConstants.GETCATEGORY:// 成功
+				if (msg.obj != null) {
+					String result = msg.obj.toString();
+					try {
+						parseResult(result);
+
+						if (mNewData.size() != 0) {
+							L.e(TAG, "取回的条数==" + mNewData.size());
+							L.e(TAG, "总条数==" + mData.size());
+							L.e(TAG, "########获取数据结束");
+							mPullListView.onPullUpRefreshComplete();
+							mPullListView.onPullDownRefreshComplete();
+							setLastUpdateTime();// 设置最后刷新事件
+						} else {
+							if (!isPullDown) {
+								mPullListView.onPullUpRefreshComplete();
+								mPullListView.setHasMoreData(false);
+							} else {
+								mPullListView.onPullDownRefreshComplete();
+								setLastUpdateTime();// 设置最后刷新事件
+							}
+						}
+					} catch (SocketTimeoutException e) {
+						// TODO Auto-generated catch block
+						L.e(TAG, "连接超时" + e.getMessage());
+
+						throw new RuntimeException(e);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						L.e(TAG, "获取失败" + e.getMessage());
+
+						throw new RuntimeException(e);
+					}
+				} else {
+					ToastManager.show(ProductActivity.this, "获取数据失败");
+				}
+
+				break;
+
+			case SoapConstants.LOADING: {
+
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	};
+}
